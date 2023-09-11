@@ -75,14 +75,25 @@ def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> 
 
     with conn.cursor() as cur:
         for vacancy in data:
-            cur.execute(
-                """
-                INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency,published_at, requirement, 
-                responsibility, vacancy_url)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], vacancy[5], vacancy[6], vacancy[7],
-                 vacancy[8], vacancy[9])
-            )
+            try:
+                cur.execute(
+                    """
+                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, requirement, 
+                    responsibility, vacancy_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], vacancy[5], vacancy[6], vacancy[7],
+                     vacancy[8], vacancy[9])
+                )
+            except IndexError:
+                cur.execute(
+                    """
+                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, requirement, 
+                    responsibility, vacancy_url)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], '', vacancy[5], vacancy[6], vacancy[7],
+                     vacancy[8])
+                )
     conn.commit()
     conn.close()
