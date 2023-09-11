@@ -40,6 +40,7 @@ def create_db(db_name: str, params: dict) -> None:
                 company_id int REFERENCES employers(company_id),
                 salary int,
                 published_at timestamp,
+                requirement text,
                 responsibility text,                
                 vacancy_url text   
             )
@@ -47,3 +48,44 @@ def create_db(db_name: str, params: dict) -> None:
 
     conn_2.commit()
     conn_2.close()
+
+
+def save_data_company_to_db(data: list[tuple], db_name: str, params: dict) -> None:
+    """
+    Saves company's data to database
+    """
+    conn = psycopg2.connect(dbname=db_name, **params)
+
+    with conn.cursor() as cur:
+        for company in data:
+            cur.execute(
+                """
+                INSERT INTO employers (company_id, company_name, company_url, open_vacancies)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (company[0], company[1], company[2], company[3])
+            )
+    conn.commit()
+    conn.close()
+
+
+def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> None:
+    """
+    Saves vacancy's data to database
+    """
+    conn = psycopg2.connect(dbname=db_name, **params)
+
+    videos_data = channel['videos']
+    for video in videos_data:
+        video_data = video['snippet']
+        cur.execute(
+            """
+            INSERT INTO videos (channel_id, title, publish_date, video_url)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (channel_id, video_data['title'], video_data['publishedAt'],
+             f"https://www.youtube.com/watch?v={video['id']['videoId']}")
+                )
+
+    conn.commit()
+    conn.close()

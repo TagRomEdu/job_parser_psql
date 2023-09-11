@@ -53,4 +53,4 @@ class HeadHunterAPI(APIWorker):
 
     def get_vacancies(self, employer_id: int) -> list[dict]:
         request = requests.get(self.HH_VACANCIES + f"?employer_id={employer_id}").json()
-        return request
+        return request["items"]
