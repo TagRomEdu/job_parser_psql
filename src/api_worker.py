@@ -39,6 +39,7 @@ class HeadHunterAPI(APIWorker):
     def get_companies_data(self, companies_list: list) -> list:
 
         company_info_list = []
+
         for company in companies_list:
             company_data = requests.get(self.HH_EMPLOYERS + f"?text={company.lower()}").json()
             primary_info = company_data["items"][0]
@@ -51,6 +52,23 @@ class HeadHunterAPI(APIWorker):
 
         return company_info_list
 
-    def get_vacancies(self, employer_id: int) -> list[dict]:
+    def get_vacancies(self, employer_id: int) -> list:
         request = requests.get(self.HH_VACANCIES + f"?employer_id={employer_id}").json()
-        return request["items"]
+        vac_lst = request["items"]
+
+        vacancy_info_list = []
+
+        for vacancy in vac_lst:
+            vacancy_info = (vacancy["id"],
+                            vacancy["name"],
+                            vacancy["area"]["name"],
+                            vacancy["employer"]["id"],
+                            vacancy["salary"]["from"],
+                            vacancy["salary"]["currency"],
+                            vacancy["published_at"],
+                            vacancy["snippet"]["requirement"],
+                            vacancy["snippet"]["responsibility"],
+                            vacancy["apply_alternate_url"])
+            vacancy_info_list.append(vacancy_info)
+
+        return vacancy_info_list

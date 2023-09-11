@@ -1,5 +1,4 @@
 import psycopg2
-from typing import Any
 
 
 def create_db(db_name: str, params: dict) -> None:
@@ -10,10 +9,7 @@ def create_db(db_name: str, params: dict) -> None:
     conn.autocommit = True
     cur = conn.cursor()
 
-    try:
-        cur.execute(f'DROP DATABASE {db_name}')
-    except Exception:
-        pass
+    cur.execute(f'DROP DATABASE {db_name}')
 
     cur.execute(f'CREATE DATABASE {db_name}')
 
@@ -40,6 +36,7 @@ def create_db(db_name: str, params: dict) -> None:
                 city varchar NOT NULL,
                 company_id int REFERENCES employers(company_id),
                 salary int,
+                currency varchar(100),
                 published_at timestamp,
                 requirement text,
                 responsibility text,                
@@ -70,31 +67,22 @@ def save_data_company_to_db(data: list[tuple], db_name: str, params: dict) -> No
     conn.close()
 
 
-def save_data_vacancies_to_db(data: list[dict[str, Any]], db_name: str, params: dict) -> None:
+def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> None:
     """
     Saves vacancy's data to database
     """
     conn = psycopg2.connect(dbname=db_name, **params)
 
-    with conn.cersor() as cur:
+    with conn.cursor() as cur:
         for vacancy in data:
-            vacancy_id = vacancy["id"]
-            name = vacancy["name"]
-            city = vacancy["area"]["name"]
-            company_id = vacancy["employer"]["id"]
-            salary = vacancy["salary"]
-            published_at = vacancy["published_at"]
-            requirement = vacancy["snippet"]["requirement"]
-            responsibility = vacancy["snippet"]["responsibility"]
-            vacancy_url = vacancy["apply_alternate_url"]
-
             cur.execute(
                 """
-                INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, published_at, requirement, 
+                INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency,published_at, requirement, 
                 responsibility, vacancy_url)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (vacancy_id, name, city, company_id, salary, published_at, requirement, responsibility, vacancy_url)
+                (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], vacancy[5], vacancy[6], vacancy[7],
+                 vacancy[8], vacancy[9])
             )
     conn.commit()
     conn.close()
