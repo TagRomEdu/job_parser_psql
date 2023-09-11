@@ -27,7 +27,7 @@ def create_db(db_name: str, params: dict) -> None:
                 company_id int PRIMARY KEY, 
                 company_name varchar(255) NOT NULL, 
                 company_url text, 
-                open_vacancies int, 
+                open_vacancies int 
             )
         ''')
 
