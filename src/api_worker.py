@@ -59,16 +59,28 @@ class HeadHunterAPI(APIWorker):
         vacancy_info_list = []
 
         for vacancy in vac_lst:
-            vacancy_info = (vacancy["id"],
-                            vacancy["name"],
-                            vacancy["area"]["name"],
-                            vacancy["employer"]["id"],
-                            vacancy["salary"]["from"],
-                            vacancy["salary"]["currency"],
-                            vacancy["published_at"],
-                            vacancy["snippet"]["requirement"],
-                            vacancy["snippet"]["responsibility"],
-                            vacancy["apply_alternate_url"])
-            vacancy_info_list.append(vacancy_info)
+            try:
+                vacancy_info = (vacancy["id"],
+                                vacancy["name"],
+                                vacancy["area"]["name"],
+                                vacancy["employer"]["id"],
+                                vacancy["salary"]["from"],
+                                vacancy["salary"]["currency"],
+                                vacancy["published_at"],
+                                vacancy["snippet"]["requirement"],
+                                vacancy["snippet"]["responsibility"],
+                                vacancy["apply_alternate_url"])
+                vacancy_info_list.append(vacancy_info)
+            except TypeError:
+                vacancy_info = (vacancy["id"],
+                                vacancy["name"],
+                                vacancy["area"]["name"],
+                                vacancy["employer"]["id"],
+                                vacancy["salary"],
+                                vacancy["published_at"],
+                                vacancy["snippet"]["requirement"],
+                                vacancy["snippet"]["responsibility"],
+                                vacancy["apply_alternate_url"])
+                vacancy_info_list.append(vacancy_info)
 
         return vacancy_info_list
