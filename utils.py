@@ -77,7 +77,7 @@ def save_data_vacancies_to_db(data: list[dict[str, Any]], db_name: str, params: 
     conn = psycopg2.connect(dbname=db_name, **params)
 
     with conn.cersor() as cur:
-        for vacancy in data
+        for vacancy in data:
             vacancy_id = vacancy["id"]
             name = vacancy["name"]
             city = vacancy["area"]["name"]
@@ -88,15 +88,13 @@ def save_data_vacancies_to_db(data: list[dict[str, Any]], db_name: str, params: 
             responsibility = vacancy["snippet"]["responsibility"]
             vacancy_url = vacancy["apply_alternate_url"]
 
-        for video in videos_data:
-            video_data = video['snippet']
             cur.execute(
                 """
-                INSERT INTO videos (channel_id, title, publish_date, video_url)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, published_at, requirement, 
+                responsibility, vacancy_url)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (channel_id, video_data['title'], video_data['publishedAt'],
-                 f"https://www.youtube.com/watch?v={video['id']['videoId']}")
-                    )
+                (vacancy_id, name, city, company_id, salary, published_at, requirement, responsibility, vacancy_url)
+            )
     conn.commit()
     conn.close()
