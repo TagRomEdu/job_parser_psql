@@ -1,4 +1,5 @@
 import psycopg2
+from typing import Any
 
 
 def create_db(db_name: str, params: dict) -> None:
@@ -69,23 +70,33 @@ def save_data_company_to_db(data: list[tuple], db_name: str, params: dict) -> No
     conn.close()
 
 
-def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> None:
+def save_data_vacancies_to_db(data: list[dict[str, Any]], db_name: str, params: dict) -> None:
     """
     Saves vacancy's data to database
     """
     conn = psycopg2.connect(dbname=db_name, **params)
 
-    videos_data = channel['videos']
-    for video in videos_data:
-        video_data = video['snippet']
-        cur.execute(
-            """
-            INSERT INTO videos (channel_id, title, publish_date, video_url)
-            VALUES (%s, %s, %s, %s)
-            """,
-            (channel_id, video_data['title'], video_data['publishedAt'],
-             f"https://www.youtube.com/watch?v={video['id']['videoId']}")
-                )
+    with conn.cersor() as cur:
+        for vacancy in data
+            vacancy_id = vacancy["id"]
+            name = vacancy["name"]
+            city = vacancy["area"]["name"]
+            company_id = vacancy["employer"]["id"]
+            salary = vacancy["salary"]
+            published_at = vacancy["published_at"]
+            requirement = vacancy["snippet"]["requirement"]
+            responsibility = vacancy["snippet"]["responsibility"]
+            vacancy_url = vacancy["apply_alternate_url"]
 
+        for video in videos_data:
+            video_data = video['snippet']
+            cur.execute(
+                """
+                INSERT INTO videos (channel_id, title, publish_date, video_url)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (channel_id, video_data['title'], video_data['publishedAt'],
+                 f"https://www.youtube.com/watch?v={video['id']['videoId']}")
+                    )
     conn.commit()
     conn.close()
