@@ -37,9 +37,11 @@ class DBManager:
         """
         ru_salary = int(self.db_worker("SELECT AVG(salary) as ru_salary FROM vacancies WHERE currency = 'RUR'",
                                        self.db_name, self.params)[0][0])
-        usd_salary = int(self.db_worker("SELECT AVG(salary) as usd_salary FROM vacancies WHERE currency = 'USD'",
-                                        self.db_name, self.params)[0][0])
-
+        try:
+            usd_salary = int(self.db_worker("""SELECT AVG(salary) as usd_salary FROM vacancies 
+            WHERE currency = 'USD'""", self.db_name, self.params)[0][0])
+        except TypeError:
+            usd_salary = 0
         return f"{ru_salary} RUR", f"{usd_salary} USD"
 
     def get_vacancies_with_higher_salary(self):
