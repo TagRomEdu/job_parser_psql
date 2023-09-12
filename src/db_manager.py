@@ -1,22 +1,23 @@
-import requests
 import psycopg2
 
 
 class DBManager:
-    HH_EMPLOYERS = 'https://api.hh.ru/employers'
+    def __init__(self, db_name, params):
+        self.db_name = db_name
+        self.params = params
 
-    def get_companies_and_vacancies_count(self, company_lst: list) -> dict:
+    def get_companies_and_vacancies_count(self) -> list[tuple]:
         """
         Returns dict of companies and vacancies' count
         """
-        company_dict = {}
-        for company in company_lst:
-            company_data = requests.get(self.HH_EMPLOYERS + f"?text={company.lower()}").json()
-            primary_info = company_data["items"][0]
 
-            company_dict[primary_info["name"]] = len(requests.get(primary_info["vacancies_url"]).json()["items"])
-
-        return company_dict
+        conn = psycopg2.connect(dbname=self.db_name, **self.params)
+        with conn.cursor() as cur:
+            cur.execute("SELECT company_name, open_vacancies FROM employers")
+            rows = cur.fetchall()
+        conn.commit()
+        conn.close()
+        return rows
 
     def get_all_vacancies(self):
         pass
