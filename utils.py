@@ -78,8 +78,8 @@ def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> 
             try:
                 cur.execute(
                     """
-                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, requirement, 
-                    responsibility, vacancy_url)
+                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, 
+                    requirement, responsibility, vacancy_url)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """,
                     (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], vacancy[5], vacancy[6], vacancy[7],
@@ -88,8 +88,8 @@ def save_data_vacancies_to_db(data: list[tuple], db_name: str, params: dict) -> 
             except IndexError:
                 cur.execute(
                     """
-                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, requirement, 
-                    responsibility, vacancy_url)
+                    INSERT INTO vacancies (vacancy_id, name, city, company_id, salary, currency, published_at, 
+                    requirement, responsibility, vacancy_url)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """,
                     (vacancy[0], vacancy[1], vacancy[2], vacancy[3], vacancy[4], '', vacancy[5], vacancy[6], vacancy[7],
