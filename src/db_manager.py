@@ -43,7 +43,11 @@ class DBManager:
         return f"{ru_salary} RUR", f"{usd_salary} USD"
 
     def get_vacancies_with_higher_salary(self):
-        pass
+        """
+        Returns list of vacancies with high salary
+        """
+        return self.db_worker("SELECT * FROM vacancies WHERE salary > (SELECT AVG(salary) FROM vacancies)",
+                              self.db_name, self.params)
 
     def get_vacancies_with_keyword(self):
         pass
