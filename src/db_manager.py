@@ -22,7 +22,7 @@ class DBManager:
         """
         return self.db_worker("SELECT company_name, open_vacancies FROM employers", self.db_name, self.params)
 
-    def get_all_vacancies(self):
+    def get_all_vacancies(self) -> list[tuple]:
         """
         Returns list of all vacancies in db
         """
@@ -31,9 +31,16 @@ class DBManager:
             INNER JOIN  employers USING(company_id)
             """, self.db_name, self.params)
 
+    def get_avg_salary(self) -> tuple:
+        """
+        Returns tuple with average salary
+        """
+        ru_salary = int(self.db_worker("SELECT AVG(salary) as ru_salary FROM vacancies WHERE currency = 'RUR'",
+                                       self.db_name, self.params)[0][0])
+        usd_salary = int(self.db_worker("SELECT AVG(salary) as usd_salary FROM vacancies WHERE currency = 'USD'",
+                                        self.db_name, self.params)[0][0])
 
-    def get_avg_salary(self):
-        pass
+        return f"{ru_salary} RUR", f"{usd_salary} USD"
 
     def get_vacancies_with_higher_salary(self):
         pass
