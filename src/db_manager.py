@@ -49,9 +49,9 @@ class DBManager:
         return self.db_worker("SELECT * FROM vacancies WHERE salary > (SELECT AVG(salary) FROM vacancies)",
                               self.db_name, self.params)
 
-    def get_vacancies_with_keyword(self):
-        pass
-
-
-
-
+    def get_vacancies_with_keyword(self, k_word):
+        """
+        Returns list of vacancies by keyword in vacancy's name
+        """
+        return self.db_worker(f"SELECT * FROM vacancies WHERE name LIKE '%{k_word.capitalize()}%'",
+                              self.db_name, self.params)
